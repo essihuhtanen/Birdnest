@@ -2,10 +2,11 @@ import { styled, Typography } from '@mui/material'
 import Header from './Header/Header'
 import { fetcher } from '../utils/fetcher'
 import { useEffect, useState } from 'react'
+import { useInfoStore } from '../store/infoStore'
 
 const HEADER_HEIGHT = '100px'
 
-const Root = styled('div')(({ theme }) => ({
+const Root = styled('div')(() => ({
   position: 'relative',
   height: '100%',
   width: '100%',
@@ -15,7 +16,7 @@ const Root = styled('div')(({ theme }) => ({
   alignItems: 'stretch'
 }))
 
-const Background = styled('div')(({ theme }) => ({
+const Background = styled('div')(() => ({
   position: 'fixed',
   width: '100vw',
   height: '100vh',
@@ -24,16 +25,11 @@ const Background = styled('div')(({ theme }) => ({
 }))
 
 const AppFrame = () => {
+  const { fetchDrones } = useInfoStore()
   const [xml, setXML] = useState('Placeholder')
 
-  const droneXML = async () => {
-    console.log('fetching drones')
-    const data = await fetcher({ path: 'drones' })
-    setXML(data)
-  }
-
   useEffect(() => {
-    droneXML()
+    fetchDrones()
   }, [])
 
   return (
