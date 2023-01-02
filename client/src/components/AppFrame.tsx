@@ -10,6 +10,7 @@ const Root = styled('div')(() => ({
   position: 'relative',
   height: '100%',
   width: '100%',
+  minHeight: '100vh',
   minWidth: '320px'
 }))
 
@@ -58,6 +59,7 @@ const AppFrame = () => {
                 <ul>
                   Name: {pilot.firstname} {pilot.lastname}
                 </ul>
+                <ul>Drone: {pilot.drone.serialNumber}</ul>
                 <ul>Email: {pilot.email}</ul>
                 <ul>Phone: {pilot.phone}</ul>
                 <ul>Last spotted: {pilot.drone.lastSeen.toLocaleTimeString()}</ul>

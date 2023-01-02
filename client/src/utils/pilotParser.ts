@@ -29,7 +29,9 @@ export const pilotParser = async (drones: Drone[], pilots: Pilot[]) => {
     const savedPilot = pilots.find((pilot) => pilot.drone.serialNumber === drone.serialNumber)
 
     if (savedPilot !== undefined) {
-      pilots.map((pilot) => (pilot.id === savedPilot.id ? { ...pilot, drone: drone } : pilot))
+      pilots = pilots.map((pilot) =>
+        pilot.id === savedPilot.id ? { ...pilot, drone: drone } : pilot
+      )
     } else {
       const newPilot = await fetchPilot(drone)
       newPilot !== null && pilots.push(newPilot)
