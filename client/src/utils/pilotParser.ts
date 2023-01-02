@@ -1,12 +1,11 @@
 import { Drone, Pilot } from '../types'
 import { fetcher } from './fetcher'
-
 const fetchPilot = async (drone: Drone) => {
   const data = await fetcher({ path: 'pilots', id: drone.serialNumber })
   return parsePilot(data, drone)
 }
 
-export const parsePilot = (data: string, drone: Drone) => {
+const parsePilot = (data: string, drone: Drone) => {
   const jsonData = JSON.parse(data)
 
   const pilot: Pilot = {
@@ -24,13 +23,21 @@ export const parsePilot = (data: string, drone: Drone) => {
   return correctData ? pilot : null
 }
 
-export const pilotParser = async (drones: Drone[]) => {
-  const pilots: Pilot[] = []
-
+export const pilotParser = async (drones: Drone[], pilots: Pilot[]) => {
   for (const drone of drones) {
-    const pilot = await fetchPilot(drone)
-    pilot !== null && pilots.push(pilot)
+    // Check if the pilot is already known and then either update it or fetch the pilot info
+    const savedPilot = pilots.find((pilot) => pilot.drone.serialNumber === drone.serialNumber)
+
+    if (savedPilot !== undefined) {
+      pilots.map((pilot) => (pilot.id === savedPilot.id ? { ...pilot, drone: drone } : pilot))
+    } else {
+      const newPilot = await fetchPilot(drone)
+      newPilot !== null && pilots.push(newPilot)
+    }
   }
 
-  return pilots
+  // Remove excess pilots before returning
+  return pilots.filter((pilot) =>
+    drones.find((drone) => drone.serialNumber === pilot.drone.serialNumber)
+  )
 }

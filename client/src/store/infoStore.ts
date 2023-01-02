@@ -3,7 +3,7 @@ import { Drone, Pilot } from '../types'
 import { fetcher, droneParser, pilotParser } from '../utils'
 
 // The observed time period (10 minutes by default) in milliseconds
-const OBSERVED_PERIOD = 600000
+const OBSERVED_PERIOD = 60000
 
 // The radius of the No Drone Zone in meters
 const SAFE_DISTANCE = 100
@@ -21,6 +21,8 @@ export const useInfoStore = create<Info>((set, get) => ({
   currentDrones: [],
   drones: [],
   pilots: [],
+  allPilots: [],
+  allDrones: [],
   fetchDrones: async () => {
     const data = await fetcher({ path: 'drones' })
     if (data !== undefined) {
@@ -75,7 +77,10 @@ export const useInfoStore = create<Info>((set, get) => ({
 
   // Fetch the pilot for each drone in the zone
   updatePilots: async () => {
-    const newPilots = await pilotParser(get().drones)
+    const newPilots = await pilotParser(get().drones, get().pilots)
+    console.log('All pilots: ')
+    console.log(get().pilots)
+
     set({
       pilots: newPilots
     })
