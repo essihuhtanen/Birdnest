@@ -1,4 +1,4 @@
-import { styled, Typography } from '@mui/material'
+import { Box, Stack, styled, Typography } from '@mui/material'
 import Header from './Header/Header'
 import { useEffect } from 'react'
 import { useInfoStore } from '../store/infoStore'
@@ -15,26 +15,53 @@ const Root = styled('div')(() => ({
   alignItems: 'stretch'
 }))
 
-const Background = styled('div')(() => ({
+const Background = styled(Stack)(() => ({
   position: 'fixed',
   width: '100vw',
   height: '100vh',
   backgroundColor: 'pink',
-  marginTop: HEADER_HEIGHT
+  marginTop: HEADER_HEIGHT,
+  alignContent: 'center',
+  overflowY: 'scroll'
+}))
+
+const PilotInfo = styled('div')(() => ({
+  backgroundColor: 'white',
+  display: 'inline-block'
 }))
 
 const AppFrame = () => {
-  const { fetchDrones } = useInfoStore()
+  const { fetchDrones, drones } = useInfoStore()
+
+  // Set the interval to fetch drones
+  useEffect(() => {
+    const intervalCall = setInterval(() => {
+      fetchDrones()
+    }, 2000)
+    return () => {
+      clearInterval(intervalCall)
+    }
+  }, [])
 
   useEffect(() => {
-    fetchDrones()
-  }, [])
+    console.log('Drones updated')
+  }, [drones])
 
   return (
     <Root>
       <Header height={HEADER_HEIGHT} />
-      <Background>
-        <Typography>Placeholder</Typography>
+      <Background spacing={2}>
+        {drones.length > 0 ? (
+          drones.map((drone) => (
+            <PilotInfo id={drone.serialNumber}>
+              <li>{drone.serialNumber}</li>
+              <li>{drone.lastSeen.toLocaleTimeString()}</li>
+              <li>{drone.distance}</li>
+            </PilotInfo>
+          ))
+        ) : (
+          <Typography>No drones</Typography>
+        )}
       </Background>
     </Root>
   )
