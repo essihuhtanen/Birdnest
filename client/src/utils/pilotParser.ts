@@ -11,10 +11,9 @@ export const pilotParser = (data: string, drone: Drone) => {
     email: jsonData.email,
     phone: jsonData.phoneNumber
   }
-
   // Check for malformed json (undefined values in the object)
   let correctData: boolean = true
-  Object.values(pilot).forEach((value) => value !== undefined && (correctData = false))
+  Object.values(pilot).forEach((value) => value === undefined && (correctData = false))
 
   return correctData ? pilot : null
 }
