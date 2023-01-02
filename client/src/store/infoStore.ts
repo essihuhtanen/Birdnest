@@ -4,7 +4,7 @@ import { fetcher, droneParser, pilotParser } from '../utils'
 
 // The observed time period (currently 1 minute) in milliseconds
 // TODO change period length
-const OBSERVED_PERIOD = 60000
+const OBSERVED_PERIOD = 600000
 
 interface Info {
   currentDrones: Drone[]
@@ -13,11 +13,6 @@ interface Info {
   fetchDrones: () => void
   updateDrones: () => void
   updatePilots: () => void
-}
-
-const fetchPilot = async (drone: Drone) => {
-  const data = await fetcher({ path: 'pilots', id: drone.serialNumber })
-  return pilotParser(data, drone)
 }
 
 export const useInfoStore = create<Info>((set, get) => ({
@@ -76,6 +71,11 @@ export const useInfoStore = create<Info>((set, get) => ({
     console.log(get().drones)
   },
 
-  // TODO
-  updatePilots: async () => {}
+  // Fetch the pilot for each drone in the zone
+  updatePilots: async () => {
+    const newPilots = await pilotParser(get().drones)
+    set({
+      pilots: newPilots
+    })
+  }
 }))

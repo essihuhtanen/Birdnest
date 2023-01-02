@@ -29,7 +29,6 @@ export const pilotParser = async (drones: Drone[]) => {
 
   for (const drone of drones) {
     const pilot = await fetchPilot(drone)
-    console.log('pilot fetched: ' + pilot?.email)
     pilot !== null && pilots.push(pilot)
   }
 
