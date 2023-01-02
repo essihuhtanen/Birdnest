@@ -1,4 +1,4 @@
-import { Box, Stack, styled, Typography } from '@mui/material'
+import { Stack, styled, Typography } from '@mui/material'
 import Header from './Header/Header'
 import { useEffect } from 'react'
 import { useInfoStore } from '../store/infoStore'

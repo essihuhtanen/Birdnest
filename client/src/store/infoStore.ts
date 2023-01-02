@@ -2,9 +2,11 @@ import create from 'zustand'
 import { Drone, Pilot } from '../types'
 import { fetcher, droneParser, pilotParser } from '../utils'
 
-// The observed time period (currently 1 minute) in milliseconds
-// TODO change period length
+// The observed time period (10 minutes by default) in milliseconds
 const OBSERVED_PERIOD = 600000
+
+// The radius of the No Drone Zone in meters
+const SAFE_DISTANCE = 100
 
 interface Info {
   currentDrones: Drone[]
@@ -23,7 +25,7 @@ export const useInfoStore = create<Info>((set, get) => ({
     const data = await fetcher({ path: 'drones' })
     if (data !== undefined) {
       set({
-        currentDrones: droneParser(data).filter((drone) => drone.distance < 100)
+        currentDrones: droneParser(data).filter((drone) => drone.distance < SAFE_DISTANCE)
       })
     }
 
