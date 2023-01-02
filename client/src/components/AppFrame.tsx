@@ -1,7 +1,6 @@
 import { styled, Typography } from '@mui/material'
 import Header from './Header/Header'
-import { fetcher } from '../utils/fetcher'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useInfoStore } from '../store/infoStore'
 
 const HEADER_HEIGHT = '100px'
@@ -26,7 +25,6 @@ const Background = styled('div')(() => ({
 
 const AppFrame = () => {
   const { fetchDrones } = useInfoStore()
-  const [xml, setXML] = useState('Placeholder')
 
   useEffect(() => {
     fetchDrones()
@@ -36,7 +34,7 @@ const AppFrame = () => {
     <Root>
       <Header height={HEADER_HEIGHT} />
       <Background>
-        <Typography>{xml}</Typography>
+        <Typography>Placeholder</Typography>
       </Background>
     </Root>
   )

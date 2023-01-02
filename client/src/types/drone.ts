@@ -1,7 +1,9 @@
 export interface Drone {
-  serialNumber: string | null
-  model: string | null
-  manufacturer: string | null
+  serialNumber: string
+  model: string
+  manufacturer: string
   x: number
   y: number
+  distance: number
+  lastSeen: Date
 }
