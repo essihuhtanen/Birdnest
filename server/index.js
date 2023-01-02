@@ -15,6 +15,9 @@ app.get('/drones', (req, res) => {
     .then((data) => {
       res.json(data)
     })
+    .catch((err) => {
+      console.log(err)
+    })
 })
 
 app.get('/pilots/:id', (req, res) => {
@@ -23,6 +26,9 @@ app.get('/pilots/:id', (req, res) => {
     .then((res) => res.text())
     .then((data) => {
       res.json(data)
+    })
+    .catch((err) => {
+      console.log(err)
     })
 })
 
