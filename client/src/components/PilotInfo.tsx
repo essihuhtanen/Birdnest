@@ -1,16 +1,5 @@
-import { Paper, Stack, styled, Typography } from '@mui/material'
-import { Drone, Pilot } from '../types'
-
-/*
-const PilotInfo = styled(Stack)(() => ({
-  width: '40%',
-  margin: '5px',
-  padding: '5px',
-  backgroundColor: 'white',
-  borderStyle: 'solid',
-  borderRadius: '5px'
-}))
-*/
+import { Stack, styled, Typography } from '@mui/material'
+import { Pilot } from '../types'
 
 const PilotHolder = styled(Stack)(() => ({
   margin: '5px 5px 5px 5px',
