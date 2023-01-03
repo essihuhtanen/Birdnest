@@ -1,10 +1,12 @@
 import { Stack, styled, Typography } from '@mui/material'
-import Header from './Header/Header'
+import Header from './Header'
+import PilotInfo from './PilotInfo'
 import { useEffect } from 'react'
 import { useInfoStore } from '../store/infoStore'
 import { Container } from '@mui/system'
 
 const HEADER_HEIGHT = '100px'
+const MARGIN_HEIGHT = '50px'
 
 const Root = styled('div')(() => ({
   position: 'relative',
@@ -15,22 +17,15 @@ const Root = styled('div')(() => ({
 }))
 
 const Background = styled(Stack)(() => ({
-  width: '100vw',
-  height: '100vh',
-  backgroundColor: 'pink',
+  width: '100%',
+  height: '100%',
   marginTop: HEADER_HEIGHT
 }))
 
-const PilotInfo = styled(Stack)(() => ({
-  margin: '5px',
-  padding: '5px',
-  backgroundColor: 'white',
-  display: 'inline-block',
-  borderStyle: 'solid',
-  borderRadius: '5px'
-}))
-
 const PilotContainer = styled(Container)(() => ({
+  width: '60%',
+  marginTop: MARGIN_HEIGHT,
+  marginBottom: MARGIN_HEIGHT,
   backgroundColor: 'white',
   alignItems: 'center'
 }))
@@ -53,19 +48,9 @@ const AppFrame = () => {
       <Header height={HEADER_HEIGHT} />
       <Background>
         <PilotContainer>
+          <Stack direction='row'></Stack>
           {pilots.length > 0 ? (
-            pilots.map((pilot) => (
-              <PilotInfo id={pilot.id}>
-                <ul>
-                  Name: {pilot.firstname} {pilot.lastname}
-                </ul>
-                <ul>Drone: {pilot.drone.serialNumber}</ul>
-                <ul>Email: {pilot.email}</ul>
-                <ul>Phone: {pilot.phone}</ul>
-                <ul>Last spotted: {pilot.drone.lastSeen.toLocaleTimeString()}</ul>
-                <ul>Closest distance to nest: {pilot.drone.distance.toFixed(2)} m</ul>
-              </PilotInfo>
-            ))
+            pilots.map((pilot) => <PilotInfo pilot={pilot}></PilotInfo>)
           ) : (
             <Typography>No drones in the No Drone Zone</Typography>
           )}
