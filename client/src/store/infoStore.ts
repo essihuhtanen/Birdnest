@@ -1,6 +1,7 @@
 import create from 'zustand'
 import { Drone, Pilot } from '../types'
-import { fetcher, droneParser, pilotParser } from '../utils'
+import { SortVariant } from '../types/sortVariant'
+import { fetcher, droneParser, pilotParser, pilotSort } from '../utils'
 
 // The observed time period (10 minutes by default) in milliseconds
 const OBSERVED_PERIOD = 600000
@@ -12,15 +13,21 @@ interface Info {
   currentDrones: Drone[]
   drones: Drone[]
   pilots: Pilot[]
+  sortDescription: string
+  sortVariant: SortVariant
   fetchDrones: () => void
   updateDrones: () => void
   updatePilots: () => void
+  setSortVariant: (variant: SortVariant, description: string) => void
+  sortPilots: () => void
 }
 
 export const useInfoStore = create<Info>((set, get) => ({
   currentDrones: [],
   drones: [],
   pilots: [],
+  sortDescription: 'Oldest first',
+  sortVariant: 'time',
   fetchDrones: async () => {
     const data = await fetcher({ path: 'drones' })
     if (data !== undefined) {
@@ -80,7 +87,19 @@ export const useInfoStore = create<Info>((set, get) => ({
     console.log(get().pilots)
 
     set({
-      pilots: newPilots
+      pilots: pilotSort(newPilots, get().sortVariant)
+    })
+  },
+  setSortVariant: (variant: SortVariant, description: string) => {
+    set({
+      sortVariant: variant,
+      sortDescription: description
+    })
+    get().sortPilots()
+  },
+  sortPilots: () => {
+    set({
+      pilots: pilotSort(get().pilots, get().sortVariant)
     })
   }
 }))
