@@ -10,5 +10,5 @@ export const fetcher = async ({ path, id }: { path: string; id?: string }) => {
     }
   }
   const response = await axios(options)
-  return response.data
+  return response.status === 200 ? response.data : undefined
 }
