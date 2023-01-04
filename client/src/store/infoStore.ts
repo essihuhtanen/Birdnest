@@ -38,10 +38,20 @@ export const useInfoStore = create<Info>((set, get) => ({
       set({
         currentDrones: droneParser(data).filter((drone) => drone.distance < SAFE_DISTANCE)
       })
+      // Update drones and pilots, if there are changes
+      if (get().currentDrones.length > 0) {
+        get().updateDrones()
+      } else {
+        // If there are no drones in the area, just check if there are pilots whose observation period is expired
+        const breakPoint = new Date(Date.now() - OBSERVED_PERIOD)
+        const expiredPilots = get().pilots.filter((pilot) => pilot.drone.lastSeen < breakPoint)
+        if (expiredPilots.length > 0) {
+          set({
+            pilots: get().pilots.filter((pilot) => pilot.drone.lastSeen > breakPoint)
+          })
+        }
+      }
     }
-
-    get().updateDrones()
-    get().updatePilots()
   },
   // Updates the drones array
   updateDrones: () => {
@@ -78,12 +88,13 @@ export const useInfoStore = create<Info>((set, get) => ({
     set({
       drones: get().drones.filter((dr) => dr.lastSeen > breakPoint)
     })
+    // Update pilots
+    get().updatePilots()
   },
 
   // Fetch the pilot for each drone in the zone
   updatePilots: async () => {
     const newPilots = await pilotParser(get().drones, get().pilots)
-
     set({
       pilots: pilotSort(newPilots, get().sortVariant)
     })
