@@ -2,11 +2,19 @@ import { Pilot } from '../types'
 import { SortVariant } from '../types/sortVariant'
 
 const sortByTime = (a: Pilot, b: Pilot) => {
-  return a.drone.lastSeen <= b.drone.lastSeen ? 1 : -1
+  if (!(a.drone.lastSeen < b.drone.lastSeen) && !(a.drone.lastSeen > b.drone.lastSeen)) {
+    return a.lastname > b.lastname ? 1 : -1
+  } else {
+    return a.drone.lastSeen <= b.drone.lastSeen ? 1 : -1
+  }
 }
 
 const sortByTimeReverse = (a: Pilot, b: Pilot) => {
-  return a.drone.lastSeen >= b.drone.lastSeen ? 1 : -1
+  if (!(a.drone.lastSeen < b.drone.lastSeen) && !(a.drone.lastSeen > b.drone.lastSeen)) {
+    return a.lastname > b.lastname ? 1 : -1
+  } else {
+    return a.drone.lastSeen >= b.drone.lastSeen ? 1 : -1
+  }
 }
 
 const sortByDistance = (a: Pilot, b: Pilot) => {
