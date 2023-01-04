@@ -1,22 +1,19 @@
 const express = require('express')
 const cors = require('cors')
 const app = express()
-const PORT = 3001
-
-app.use(
-  cors({
-    origin: '*'
-  })
-)
+const PORT = process.env.PORT || 3001
+app.use(cors())
 
 app.get('/drones', (req, res) => {
   fetch('http://assignments.reaktor.com/birdnest/drones')
     .then((res) => res.text())
     .then((data) => {
       res.json(data)
+      res.end()
     })
     .catch((err) => {
-      console.log(err)
+      res.writeHead(503, 'Error fetching drone resource')
+      res.end()
     })
 })
 
@@ -26,10 +23,12 @@ app.get('/pilots/:id', (req, res) => {
     .then((res) => res.text())
     .then((data) => {
       res.json(data)
+      res.end()
     })
     .catch((err) => {
-      console.log(err)
+      res.writeHead(503, 'Error fetching pilot resource')
+      res.end()
     })
 })
 
-app.listen(PORT, () => console.log('Listening on port 3001'))
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`))
