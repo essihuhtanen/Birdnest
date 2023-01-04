@@ -64,7 +64,7 @@ const AppFrame = () => {
           </Stack>
           <Stack direction='row'></Stack>
           {pilots.length > 0 ? (
-            pilots.map((pilot) => <PilotInfo pilot={pilot}></PilotInfo>)
+            pilots.map((pilot) => <PilotInfo key={pilot.id} pilot={pilot}></PilotInfo>)
           ) : (
             <Typography>No drones in the No Drone Zone</Typography>
           )}
