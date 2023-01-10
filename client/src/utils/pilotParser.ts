@@ -63,3 +63,14 @@ export const pilotParser = async (drones: Drone[], pilots: Pilot[]) => {
     drones.find((drone) => drone.serialNumber === pilot.drone.serialNumber)
   )
 }
+
+export const fetchAllPilots = async (drones: Drone[]) => {
+  const pilots: Pilot[] = []
+
+  for (const drone of drones) {
+    const newPilot = await fetchPilot(drone)
+    newPilot !== null && pilots.push(newPilot)
+  }
+
+  return pilots
+}

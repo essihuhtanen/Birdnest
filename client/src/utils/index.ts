@@ -1,7 +1,7 @@
 import { fetcher } from './fetcher'
-import { droneParser } from './droneParser'
-import { distanceFromNest } from './distance'
-import { pilotParser } from './pilotParser'
+import { initialParse, droneParser } from './droneParser'
+import { pilotParser, fetchAllPilots } from './pilotParser'
 import { pilotSort } from './sortPredicates'
+import { setTimer } from './timer'
 
-export { fetcher, distanceFromNest, droneParser, pilotParser, pilotSort }
+export { fetcher, initialParse, droneParser, pilotParser, fetchAllPilots, pilotSort, setTimer }
