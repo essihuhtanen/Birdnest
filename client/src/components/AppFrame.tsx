@@ -39,16 +39,11 @@ const PilotContainer = styled(Container)(() => ({
 }))
 
 const AppFrame = () => {
-  const { fetchDrones, pilots, setSortVariant, sortDescription } = useInfoStore()
+  const { initiateDrones, pilots, setSortVariant, sortDescription } = useInfoStore()
 
-  // Set the interval to fetch drones
+  // Populate drones
   useEffect(() => {
-    const intervalCall = setInterval(() => {
-      fetchDrones()
-    }, 2000)
-    return () => {
-      clearInterval(intervalCall)
-    }
+    initiateDrones()
   }, [])
 
   return (
