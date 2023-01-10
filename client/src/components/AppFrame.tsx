@@ -1,4 +1,4 @@
-import { Stack, styled, Typography } from '@mui/material'
+import { Stack, styled, Typography, CircularProgress, Box } from '@mui/material'
 import Header from './Header'
 import PilotInfo from './PilotInfo'
 import SortingMenu from './SortingMenu'
@@ -39,16 +39,11 @@ const PilotContainer = styled(Container)(() => ({
 }))
 
 const AppFrame = () => {
-  const { fetchDrones, pilots, setSortVariant, sortDescription } = useInfoStore()
+  const { initiateDrones, pilots, setSortVariant, sortDescription } = useInfoStore()
 
-  // Set the interval to fetch drones
+  // Populate drones
   useEffect(() => {
-    const intervalCall = setInterval(() => {
-      fetchDrones()
-    }, 2000)
-    return () => {
-      clearInterval(intervalCall)
-    }
+    initiateDrones()
   }, [])
 
   return (
@@ -66,7 +61,9 @@ const AppFrame = () => {
           {pilots.length > 0 ? (
             pilots.map((pilot) => <PilotInfo key={pilot.id} pilot={pilot}></PilotInfo>)
           ) : (
-            <Typography>No drones in the No Drone Zone</Typography>
+            <Box display='flex' justifyContent='center' alignItems='center'>
+              <CircularProgress />
+            </Box>
           )}
         </PilotContainer>
       </Background>

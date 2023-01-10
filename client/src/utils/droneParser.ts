@@ -1,43 +1,45 @@
 import { Drone } from '../types'
-import { distanceFromNest } from './distance'
 
 /**
- * Parses a string of XML data to an array of Drones.
- * @param data
- * @returns array of Drones parsed ([] if none in the data)
+ * Iterates an array od Drone objects, removes duplicates and sets the smallest distance and
+ * lates timestamp to the returned drone.
+ * @param data Array of JSON Drone objects
+ * @returns Drone[]
  */
-export const droneParser = (data: string) => {
+export const initialParse = (data: Drone[]) => {
   const drones: Drone[] = []
 
-  const parser = new DOMParser()
-  const xmlDoc = parser.parseFromString(data, 'text/xml')
-  const droneinfos = xmlDoc.getElementsByTagName('drone')
+  const uniqueSerials = data
+    .map((drone) => drone.serialNumber)
+    .filter((v, i, a) => a.indexOf(v) === i)
 
-  for (let i = 0; i < droneinfos.length; i++) {
-    if (droneinfos[i].getElementsByTagName('serialNumber')[0].textContent !== null) {
-      const serialNumber = droneinfos[i].getElementsByTagName('serialNumber')[0].textContent
-      const model = droneinfos[i].getElementsByTagName('model')[0].textContent
-      const manufacturer = droneinfos[i].getElementsByTagName('manufacturer')[0].textContent
-      const xPos = droneinfos[i].getElementsByTagName('positionX')[0].textContent
-      const yPos = droneinfos[i].getElementsByTagName('positionY')[0].textContent
+  // Find the latest timestamp and the smallest distance for each drone
+  uniqueSerials.forEach((serialnumber) => {
+    const spottings = data.filter((drone) => drone.serialNumber === serialnumber)
 
-      let x: number
-      let y: number
-      xPos !== null ? (x = parseFloat(xPos)) : (x = 0)
-      yPos !== null ? (y = parseFloat(yPos)) : (y = 0)
-
-      const newDrone: Drone = {
-        serialNumber: serialNumber ? serialNumber : '',
-        model: model ? model : '',
-        manufacturer: manufacturer ? manufacturer : '',
-        x: x,
-        y: y,
-        distance: distanceFromNest(x, y),
-        lastSeen: new Date()
-      }
-      drones.push(newDrone)
+    const drone = {
+      ...spottings[0],
+      lastSeen: new Date(
+        spottings.reduce((prev, curr) => (prev.lastSeen > curr.lastSeen ? prev : curr)).lastSeen
+      ),
+      distance: spottings.reduce((prev, curr) => (prev.distance < curr.distance ? prev : curr))
+        .distance
     }
-  }
+
+    drones.push(drone)
+  })
+  return drones
+}
+
+/**
+ * Basic drone parser for replacing date string as a Date object for each drone.
+ * @param data Array of JSON Drone objects
+ * @returns Drone[]
+ */
+export const droneParser = (data: Drone[]) => {
+  const drones = data.map((drone) => {
+    return { ...drone, lastSeen: new Date(drone.lastSeen) }
+  })
 
   return drones
 }
