@@ -1,13 +1,18 @@
 import create from 'zustand'
 import { Drone, Pilot } from '../types'
 import { SortVariant } from '../types/sortVariant'
-import { fetcher, droneParser, pilotParser, pilotSort } from '../utils'
+import {
+  fetcher,
+  initialParse,
+  droneParser,
+  pilotParser,
+  fetchAllPilots,
+  pilotSort,
+  setTimer
+} from '../utils'
 
 // The observed time period in milliseconds
 const OBSERVED_PERIOD = 600000
-
-// The radius of the No Drone Zone in meters
-const SAFE_DISTANCE = 100
 
 // Default sort variant and description
 const DEFAULT_SORTVARIANT: SortVariant = 'time'
@@ -19,6 +24,7 @@ interface Info {
   pilots: Pilot[]
   sortDescription: string
   sortVariant: SortVariant
+  initiateDrones: () => void
   fetchDrones: () => void
   updateDrones: () => void
   updatePilots: () => void
@@ -32,11 +38,22 @@ export const useInfoStore = create<Info>((set, get) => ({
   pilots: [],
   sortDescription: DEFAULT_SORTDESCRIPTION,
   sortVariant: DEFAULT_SORTVARIANT,
+  // To be called once: fetches the history data from backend and creates the drones.
+  initiateDrones: async () => {
+    const data = await fetcher({ path: 'drones/history' })
+    const drones = initialParse(data)
+    const newPilots = await fetchAllPilots(drones)
+    set({
+      drones: drones,
+      pilots: pilotSort(newPilots, get().sortVariant)
+    })
+    setTimer(get().fetchDrones)
+  },
   fetchDrones: async () => {
     const data = await fetcher({ path: 'drones' })
     if (data !== undefined) {
       set({
-        currentDrones: droneParser(data).filter((drone) => drone.distance < SAFE_DISTANCE)
+        currentDrones: droneParser(data)
       })
       // Update drones and pilots, if there are changes
       if (get().currentDrones.length > 0) {
